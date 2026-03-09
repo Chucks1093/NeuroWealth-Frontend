@@ -5,6 +5,8 @@ import { eventBus } from "./services/eventBus";
 import { ParsedMessage } from "./types/whatsapp";
 import { initSocket } from "./services/socket";
 import { handleOnboarding } from "./services/onboarding";
+import { notificationService } from "./services/notificationService";
+import { aiAgentService } from "./services/aiAgent";
 
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
@@ -83,6 +85,10 @@ const server = app.listen(PORT, () => {
 
 // ── Initialize WebSocket ───────────────────────────────────────────────────
 initSocket(server);
+
+// ── Initialize Services ─────────────────────────────────────────────────────
+logger.info('Initializing notification service and AI agent');
+// Services are auto-initialized through their constructors
 
 // ── Graceful shutdown ──────────────────────────────────────────────────────
 const shutdown = (signal: string) => {

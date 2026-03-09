@@ -5,6 +5,8 @@ import { logger } from '../utils/logger';
 export const EVENTS = {
   MESSAGE_RECEIVED: 'message:received',
   MESSAGE_PARSE_ERROR: 'message:parse_error',
+  AGENT_REBALANCED: 'agent:rebalanced',
+  PORTFOLIO_APY_CHANGED: 'portfolio:apy_changed',
 } as const;
 
 class MessageEventBus extends EventEmitter {
@@ -32,6 +34,24 @@ class MessageEventBus extends EventEmitter {
 
   onParseError(handler: (data: { error: Error; rawPayload: unknown }) => void): void {
     this.on(EVENTS.MESSAGE_PARSE_ERROR, handler);
+  }
+
+  emitAgentRebalanced(userId: string, rebalanceData: any): void {
+    logger.info({ userId, rebalanceData }, 'Emitting agent rebalanced event');
+    this.emit(EVENTS.AGENT_REBALANCED, { userId, rebalanceData });
+  }
+
+  emitPortfolioApyChanged(userId: string, currentApy: number, originalApy: number): void {
+    logger.info({ userId, currentApy, originalApy }, 'Emitting portfolio APY changed event');
+    this.emit(EVENTS.PORTFOLIO_APY_CHANGED, { userId, currentApy, originalApy });
+  }
+
+  onAgentRebalanced(handler: (data: { userId: string; rebalanceData: any }) => void): void {
+    this.on(EVENTS.AGENT_REBALANCED, handler);
+  }
+
+  onPortfolioApyChanged(handler: (data: { userId: string; currentApy: number; originalApy: number }) => void): void {
+    this.on(EVENTS.PORTFOLIO_APY_CHANGED, handler);
   }
 }
 
