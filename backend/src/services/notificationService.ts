@@ -114,6 +114,12 @@ class NotificationService {
   }
 
   private setupCronJobs(): void {
+    // Don't schedule cron jobs in test environment
+    if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined) {
+      logger.info('Skipping cron job setup in test environment');
+      return;
+    }
+
     // Weekly summary - Every Monday at 9:00 AM
     cron.schedule('0 9 * * 1', () => {
       logger.info('Starting weekly summary notifications');

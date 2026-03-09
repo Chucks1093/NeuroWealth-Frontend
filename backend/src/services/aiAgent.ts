@@ -34,6 +34,12 @@ class AIAgentService {
    * Start the AI agent monitoring
    */
   startMonitoring(): void {
+    // Don't start monitoring in test environment
+    if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined) {
+      logger.info('Skipping AI agent monitoring in test environment');
+      return;
+    }
+
     if (this.isRunning) {
       logger.warn('AI agent is already running');
       return;

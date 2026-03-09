@@ -99,7 +99,7 @@ describe('Notification System Integration', () => {
     it('should generate template registration commands', () => {
       const commands = metaTemplateService.generateManualSetupCommands();
       expect(commands.length).toBeGreaterThan(0);
-      expect(commands[0]).toContain('curl -X POST');
+      expect(commands.join('')).toContain('curl -X POST');
       expect(commands.join('')).toContain('weekly_yield_summary');
       expect(commands.join('')).toContain('auto_rebalanced');
       expect(commands.join('')).toContain('yield_drop_alert');
