@@ -17,6 +17,8 @@ export const EVENTS = {
   DEPLOYMENT_REQUESTED: 'deployment:requested',
   DEPLOYMENT_CONFIRMED: 'deployment:confirmed',
   DEPLOYMENT_FAILED: 'deployment:failed',
+  AGENT_REBALANCED: 'agent:rebalanced',
+  PORTFOLIO_APY_CHANGED: 'portfolio:apy_changed',
 } as const;
 
 class MessageEventBus extends EventEmitter {
@@ -44,6 +46,31 @@ class MessageEventBus extends EventEmitter {
 
   onParseError(handler: (data: { error: Error; rawPayload: unknown }) => void): void {
     this.on(EVENTS.MESSAGE_PARSE_ERROR, handler);
+  }
+
+  // ── Notification event emitters ───────────────────────────────────────────
+
+  emitAgentRebalanced(phone: string, data: {
+    fromStrategy: string;
+    toStrategy: string;
+    oldApy: number;
+    newApy: number;
+  }): void {
+    logger.info({ phone, data }, 'Emitting agent rebalanced event');
+    this.emit(EVENTS.AGENT_REBALANCED, { userId: phone, rebalanceData: data });
+  }
+
+  onAgentRebalanced(handler: (data: { userId: string; rebalanceData: any }) => void): void {
+    this.on(EVENTS.AGENT_REBALANCED, handler);
+  }
+
+  emitPortfolioApyChanged(phone: string, currentApy: number, originalApy: number): void {
+    logger.info({ phone, currentApy, originalApy }, 'Emitting portfolio APY changed event');
+    this.emit(EVENTS.PORTFOLIO_APY_CHANGED, { userId: phone, currentApy, originalApy });
+  }
+
+  onPortfolioApyChanged(handler: (data: { userId: string; currentApy: number; originalApy: number }) => void): void {
+    this.on(EVENTS.PORTFOLIO_APY_CHANGED, handler);
   }
 
   // ── Deposit event emitters ────────────────────────────────────────────────

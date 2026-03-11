@@ -4,6 +4,7 @@
  * In non-test environments, delegate to userRepository and map types.
  */
 import { randomUUID } from 'crypto';
+import { logger } from '../utils/logger';
 import * as repo from './userRepository';
 
 export type OnboardingStep =
@@ -15,6 +16,34 @@ export type OnboardingStep =
   | 'withdrawal_confirm';
 
 export type Strategy = 'conservative' | 'balanced' | 'growth';
+
+export type NotificationType = "weekly_summary" | "rebalance" | "apy_alert";
+export type TransactionType = "deposit" | "withdrawal" | "rebalance";
+
+export interface NotificationHistory {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  templateName: string;
+  sentAt: Date;
+  data: Record<string, any>;
+}
+
+export interface Transaction {
+  id: string;
+  phone: string;
+  type: TransactionType;
+  amount?: number;
+  strategy?: Strategy;
+  txHash?: string;
+  metadata?: {
+    fromAPY?: number;
+    toAPY?: number;
+    description?: string;
+    walletAddress?: string;
+  };
+  createdAt: Date;
+}
 
 export interface User {
   id: string;
@@ -35,6 +64,8 @@ const IS_TEST = process.env.NODE_ENV === 'test';
 
 // ── In-memory test store ─────────────────────────────────────────────────────
 const store = new Map<string, User>();
+const notificationStore = new Map<string, NotificationHistory>();
+const transactions = new Map<string, Transaction[]>();
 
 async function mem_findUserByPhone(phone: string): Promise<User | null> {
   return store.get(phone) ?? null;
@@ -127,7 +158,7 @@ const repo_setUserStep = repo.setUserStep;
 const repo_incrementUserDeposit = repo.incrementUserDeposit;
 
 async function notImplemented(): Promise<never> {
-  throw new Error('Withdrawal operations are not implemented in DB mode');
+  throw new Error('This operation is not implemented in DB mode yet');
 }
 
 // ── Public API (conditional) ────────────────────────────────────────────────
@@ -152,10 +183,100 @@ export const executeWithdrawal = IS_TEST ? mem_executeWithdrawal : notImplemente
 export const cancelWithdrawal = IS_TEST ? mem_cancelWithdrawal : notImplemented;
 export const updateBalance = IS_TEST ? mem_updateBalance : notImplemented;
 
+// ── Notification & Transaction History ───────────────────────────────────────
+
+export async function createNotificationHistory(
+  userId: string,
+  type: NotificationType,
+  templateName: string,
+  data: Record<string, any>
+): Promise<NotificationHistory> {
+  if (IS_TEST) {
+    const notification: NotificationHistory = {
+      id: randomUUID(),
+      userId,
+      type,
+      templateName,
+      sentAt: new Date(),
+      data
+    };
+    notificationStore.set(notification.id, notification);
+    return notification;
+  }
+  return notImplemented();
+}
+
+export async function getRecentNotification(
+  userId: string,
+  type: NotificationType,
+  timeWindowMs: number
+): Promise<NotificationHistory | null> {
+  if (IS_TEST) {
+    const now = Date.now();
+    const notifications = Array.from(notificationStore.values())
+      .filter(n => n.userId === userId && n.type === type)
+      .filter(n => (now - n.sentAt.getTime()) < timeWindowMs)
+      .sort((a, b) => b.sentAt.getTime() - a.sentAt.getTime());
+
+    return notifications[0] || null;
+  }
+  return notImplemented();
+}
+
+export async function getAllActiveUsers(): Promise<User[]> {
+  if (IS_TEST) {
+    return Array.from(store.values())
+      .filter(user => user.step === 'active' && user.totalDeposited > 0);
+  }
+  return notImplemented();
+}
+
+export async function getNotificationHistory(
+  userId: string,
+  limit: number = 10
+): Promise<NotificationHistory[]> {
+  if (IS_TEST) {
+    return Array.from(notificationStore.values())
+      .filter(n => n.userId === userId)
+      .sort((a, b) => b.sentAt.getTime() - a.sentAt.getTime() || b.id.localeCompare(a.id))
+      .slice(0, limit);
+  }
+  return notImplemented();
+}
+
+export async function addTransaction(tx: Omit<Transaction, "id" | "createdAt">): Promise<void> {
+  if (IS_TEST) {
+    const txId = randomUUID();
+    const transaction: Transaction = {
+      ...tx,
+      id: txId,
+      createdAt: new Date(),
+    };
+    
+    const userTxs = transactions.get(tx.phone) || [];
+    userTxs.unshift(transaction);
+    transactions.set(tx.phone, userTxs);
+    return;
+  }
+  // TODO: Implement in repository
+  logger.warn('addTransaction not implemented in DB mode');
+}
+
+export async function getTransactionHistory(phone: string, limit: number = 5): Promise<Transaction[]> {
+  if (IS_TEST) {
+    const userTxs = transactions.get(phone) || [];
+    return userTxs.slice(0, limit);
+  }
+  return [];
+}
+
+// ── Test helpers ─────────────────────────────────────────────────────────────
 export const _test = {
   clear: () => {
     if (IS_TEST) {
       store.clear();
+      notificationStore.clear();
+      transactions.clear();
     } else {
       console.warn('_test.clear() is not supported with PostgreSQL');
     }
@@ -176,4 +297,3 @@ export const _test = {
     }
   },
 };
-
