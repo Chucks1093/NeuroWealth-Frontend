@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/Button";
+import { analytics } from "@/lib/analytics";
 
 export function WalletConnect() {
   const [address, setAddress] = useState<string | null>(null);
@@ -12,17 +13,19 @@ export function WalletConnect() {
     setLoading(true);
     setError(null);
     try {
-      // Dynamically import to avoid SSR issues
       const freighter = await import("@stellar/freighter-api");
       const connected = await freighter.isConnected();
       if (!connected) {
         setError("Freighter wallet not found. Please install it.");
+        analytics.track("wallet_connect_failed", { error: "not_connected" });
         return;
       }
       const { address: addr } = await freighter.getAddress();
       setAddress(addr);
+      analytics.track("wallet_connected", { address: addr });
     } catch (e) {
       setError("Failed to connect wallet.");
+      analytics.track("wallet_connect_error", { error: (e as Error).message });
     } finally {
       setLoading(false);
     }
