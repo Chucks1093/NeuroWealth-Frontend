@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/contexts";
 import { ClientProviders } from "@/components/ClientProviders";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { DiagnosticsPanel } from "@/components/diagnostics/DiagnosticsPanel";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://neurowealth.app"),
