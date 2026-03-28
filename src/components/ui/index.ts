@@ -7,6 +7,7 @@ export * from "./Card";
 export * from "./EmptyState";
 export * from "./ErrorPage";
 export * from "./Input";
+export * from "./InlineBanner";
 export * from "./Modal";
 export type { ModalSize } from "./Modal";
 export * from "./Switch";
