@@ -11,22 +11,22 @@ import { CookieBanner, PrivacyModal } from "@/components/cookie";
 
 export function ClientProviders({ children }: { children: ReactNode }) {
   return (
-  <SandboxProvider>
-   <ThemeProvider>
-    <I18nProvider>
-      <AuthProvider>
-        <WalletProvider>
-          <ToastProvider>
-            <CookieConsentProvider>
-              {children}
-              <CookieBanner />
-              <PrivacyModal />
-            </CookieConsentProvider>
-          </ToastProvider>
-        </WalletProvider>
-      </AuthProvider>
-    </I18nProvider>
-   </ThemeProvider>
-  <SandboxProvider>
+    <SandboxProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <AuthProvider>
+            <WalletProvider>
+              <ToastProvider>
+                <CookieConsentProvider>
+                  {children}
+                  <CookieBanner />
+                  <PrivacyModal />
+                </CookieConsentProvider>
+              </ToastProvider>
+            </WalletProvider>
+          </AuthProvider>
+        </I18nProvider>
+      </ThemeProvider>
+    </SandboxProvider>
   );
 }
