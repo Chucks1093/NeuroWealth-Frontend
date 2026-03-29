@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/features/landing/HeroSection";
+import { HomeFooter } from "@/features/landing/HomeFooter";
 
 const FeaturesSection = dynamic(
   () => import("@/features/landing/FeaturesSection").then((m) => m.FeaturesSection),
@@ -40,9 +41,7 @@ export default function Home() {
         <CtaSection />
       </main>
 
-      <footer className="border-t border-gray-800 py-8 text-center text-sm text-slate-600">
-        &copy; {new Date().getFullYear()} NeuroWealth &middot; Built on Stellar
-      </footer>
+      <HomeFooter />
     </>
   );
 }
