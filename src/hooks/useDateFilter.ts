@@ -25,13 +25,20 @@ export function useDateFilter<T extends DateFilterable>(
       const d = item.date instanceof Date ? item.date : new Date(item.date);
       if (isNaN(d.getTime())) return true;
       const t = d.getTime();
-      const startOk = !range.start || t >= range.start.setHours(0, 0, 0, 0);
-      const endOk = !range.end || t <= range.end.setHours(23, 59, 59, 999);
+      // ✅ Clone before calling .setHours() to avoid mutating the original Date objects
+      const startOk =
+        !range.start || t >= new Date(range.start).setHours(0, 0, 0, 0);
+      const endOk =
+        !range.end || t <= new Date(range.end).setHours(23, 59, 59, 999);
       return startOk && endOk;
     });
   }, [data, range.start, range.end]);
 
-  return { filtered, count: filtered.length, hasFilter: !!(range.start || range.end) };
+  return {
+    filtered,
+    count: filtered.length,
+    hasFilter: !!(range.start || range.end),
+  };
 }
 
 /**
