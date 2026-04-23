@@ -7,14 +7,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings 100",
     "qa:visual-baseline": "node scripts/capture-visual-baselines.mjs"
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^1.8.0",
     "@stellar/freighter-api": "^6.0.1",
     "@stellar/stellar-sdk": "^14.4.3",
-    "@tailwindcss/postcss": "^4.2.2",
     "clsx": "^2.1.0",
     "lucide-react": "^0.447.0",
     "next": "14.2.3",
@@ -27,6 +26,7 @@
     "csstype": "3.1.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^20.19.37",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",

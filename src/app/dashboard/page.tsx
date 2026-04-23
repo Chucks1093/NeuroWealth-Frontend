@@ -1,5 +1,5 @@
-import { PortfolioDashboard } from "@/components/dashboard/PortfolioDashboard";
 import { Suspense } from "react";
+import { PortfolioDashboard } from "@/components/dashboard/PortfolioDashboard";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardSkeleton } from "@/components/ui/Skeleton";
 

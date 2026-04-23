@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { RouteMetadata } from "./breadcrumb.types";
+import type { RouteMetadata } from "@/types/breadcrumb.types";
 
 // Mock icons as simple SVG components
 export const HomeIcon = () => (

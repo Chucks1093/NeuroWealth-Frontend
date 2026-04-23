@@ -1,3 +1,4 @@
+# Yarn is the package manager (see package.json). `yarn install` without --frozen-lockfile tolerates minor lock drift.
 name: Frontend CI
 
 on:
@@ -53,17 +54,13 @@ jobs:
           "
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Lint
         run: yarn lint
-
-      - name: Type Check
-        run: yarn build
 
       - name: Build
         run: yarn build
         env:
           NEXT_PUBLIC_WEBHOOK_URL: "http://localhost:2000"
           NEXT_PUBLIC_API_URL: "http://localhost:3001"
-

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { DateRange } from "./DateRangePicker";
+import type { DateRange } from "@/types";
 
 export interface DateFilterable {
   date: string | Date;

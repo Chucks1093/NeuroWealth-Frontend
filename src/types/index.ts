@@ -66,3 +66,8 @@ export interface PageState<T> {
   state: LoadingState;
   error?: string;
 }
+
+export interface DateRange {
+  start: Date | null;
+  end: Date | null;
+}
