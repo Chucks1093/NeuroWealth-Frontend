@@ -57,20 +57,34 @@ export function successResponse<T>(data: T): ApiSuccessResponse<T> {
     };
 }
 
+function normalizeErrorDetails(
+    details: object,
+): Record<string, string | string[]> | undefined {
+    const entries = Object.entries(details).filter(
+        (e): e is [string, string | string[]] =>
+            e[1] !== undefined &&
+            (typeof e[1] === "string" || Array.isArray(e[1])),
+    );
+    if (!entries.length) return undefined;
+    return Object.fromEntries(entries);
+}
+
 /**
- * Create an error response
+ * Create an error response.
+ * `details` accepts any plain object (e.g. field error maps); non-string values are omitted.
  */
 export function errorResponse(
     code: string,
     message: string,
-    details?: Record<string, string | string[]>,
+    details?: object,
 ): ApiErrorResponse {
+    const normalized = details ? normalizeErrorDetails(details) : undefined;
     return {
         success: false,
         error: {
             code,
             message,
-            ...(details && { details }),
+            ...(normalized && { details: normalized }),
         },
     };
 }
