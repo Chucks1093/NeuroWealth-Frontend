@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDiagnostics } from "@/hooks/useDiagnostics";
 import { LogViewer } from "./LogViewer";
 import { EventMonitor } from "./EventMonitor";
@@ -8,10 +8,19 @@ import { EventMonitor } from "./EventMonitor";
 export function DiagnosticsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"logs" | "events" | "env">("logs");
+  const [isVisible, setIsVisible] = useState(process.env.NODE_ENV !== "production");
   const { logs, events, clearLogs, clearEvents, env } = useDiagnostics();
 
-  // Only show in development
-  if (process.env.NODE_ENV === "production" && !window.location.search.includes("debug=true")) {
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      return;
+    }
+
+    setIsVisible(window.location.search.includes("debug=true"));
+  }, []);
+
+  // Only show in development, or in production when debug=true is present.
+  if (!isVisible) {
     return null;
   }
 

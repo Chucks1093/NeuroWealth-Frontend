@@ -11,6 +11,8 @@ import {
   WifiOff,
 } from "lucide-react";
 import { useToast } from "@/components/notifications/ToastProvider";
+
+export const dynamic = "force-dynamic";
 import { Button, Card, InlineBanner } from "@/components/ui";
 
 const toastExamples = [
