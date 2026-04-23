@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 const colorTokens = [
   {
     name: "--color-dark-900",

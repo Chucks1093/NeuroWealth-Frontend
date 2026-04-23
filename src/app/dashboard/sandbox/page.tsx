@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
+export const dynamic = "force-dynamic";
+
 type ScenarioType = "success" | "empty" | "loading" | "partial-failure" | "timeout";
 type ModuleType = "portfolio" | "history" | "transactions";
 

@@ -15,6 +15,8 @@ import {
   type ValidationErrors,
 } from "@/lib/form-validation";
 
+export const dynamic = "force-dynamic";
+
 type SignInField = "email" | "password" | "form";
 type SignInState = "idle" | "loading" | "success";
 

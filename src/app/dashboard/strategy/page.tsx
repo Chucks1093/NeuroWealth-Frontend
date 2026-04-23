@@ -4,6 +4,7 @@ import StrategyLoading from "./loading";
 import { cn } from "@/lib/utils";
 import type { Strategy } from "@/types";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Strategy — NeuroWealth" };
 
 // ── Static strategy definitions ───────────────────────────────────────────────

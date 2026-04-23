@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState, useEffect } from "react";
 import { ResponsiveContainer } from "recharts";
 import { chartDimensions, chartTheme, getResponsiveConfig } from "@/lib/chart-theme";
 
@@ -11,7 +11,21 @@ interface BaseChartProps {
 }
 
 export function BaseChart({ children, height = chartDimensions.height, className }: BaseChartProps) {
-  const responsiveConfig = useMemo(() => getResponsiveConfig(window.innerWidth), []);
+  const [responsiveConfig, setResponsiveConfig] = useState(() => 
+    typeof window !== "undefined" ? getResponsiveConfig(window.innerWidth) : getResponsiveConfig(1024)
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const handleResize = () => {
+      setResponsiveConfig(getResponsiveConfig(window.innerWidth));
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className={className} style={{ width: "100%", height }}>

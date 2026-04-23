@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
+  staticPageGenerationTimeout: 0,
   // Compress responses with gzip for smaller transfer sizes
   compress: true,
   // Optimize images and allow external sources if needed

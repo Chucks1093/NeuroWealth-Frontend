@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Loader2, Zap } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const { signIn, isAuthenticated } = useAuth();
   const router = useRouter();
