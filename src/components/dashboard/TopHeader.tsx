@@ -7,20 +7,6 @@ import { usePathname } from "next/navigation";
 import { getRouteLabel } from "@/lib/routeMetadata";
 import { getUserInitials } from "@/lib/user";
 
-/** Longest-prefix wins so nested routes (e.g. settings/preferences) match the section title. */
-const ROUTE_PREFIX_TITLES: Array<{ prefix: string; title: string }> = [
-  { prefix: "/dashboard/settings", title: "Settings" },
-];
-
-function getDashboardTitle(pathname: string): string {
-  for (const { prefix, title } of ROUTE_PREFIX_TITLES) {
-    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
-      return title;
-    }
-  }
-  return ROUTE_TITLES[pathname] ?? "Dashboard";
-}
-
 export default function TopHeader() {
   const pathname = usePathname();
   const { user } = useAuth();
