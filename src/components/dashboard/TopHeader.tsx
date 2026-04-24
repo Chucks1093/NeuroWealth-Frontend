@@ -2,6 +2,7 @@
 
 import { Bell } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { DASHBOARD_ROUTE_TITLE_ID } from "@/lib/app-landmarks";
 import { usePathname } from "next/navigation";
 
 // Map routes to display titles
@@ -13,10 +14,24 @@ const ROUTE_TITLES: Record<string, string> = {
   "/dashboard/settings": "Settings",
 };
 
+/** Longest-prefix wins so nested routes (e.g. settings/preferences) match the section title. */
+const ROUTE_PREFIX_TITLES: Array<{ prefix: string; title: string }> = [
+  { prefix: "/dashboard/settings", title: "Settings" },
+];
+
+function getDashboardTitle(pathname: string): string {
+  for (const { prefix, title } of ROUTE_PREFIX_TITLES) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      return title;
+    }
+  }
+  return ROUTE_TITLES[pathname] ?? "Dashboard";
+}
+
 export default function TopHeader() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const title = ROUTE_TITLES[pathname] ?? "Dashboard";
+  const title = getDashboardTitle(pathname);
 
   return (
     <header
@@ -34,7 +49,10 @@ export default function TopHeader() {
       {/* Left: Logo (mobile only) + page title */}
       <div className="flex items-center gap-3">
         {/* Page title */}
-        <h1 className="text-base font-semibold text-text-primary leading-none">
+        <h1
+          id={DASHBOARD_ROUTE_TITLE_ID}
+          className="text-base font-semibold text-text-primary leading-none"
+        >
           {title}
         </h1>
       </div>

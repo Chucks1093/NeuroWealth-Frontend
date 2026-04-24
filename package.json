@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 100",
-    "qa:visual-baseline": "node scripts/capture-visual-baselines.mjs"
+    "qa:visual-baseline": "node scripts/capture-visual-baselines.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:a11y": "playwright test e2e/skip-link-landmarks.spec.ts"
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^1.8.0",

@@ -31,7 +31,7 @@ export default function MobileBottomNav() {
       className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-surface-border"
       aria-label="Mobile navigation"
     >
-      <ul className="flex items-center justify-around h-16" role="list">
+      <ul className="flex items-center justify-around h-16">
         {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
           const active = isActive(href, exact);
           return (
